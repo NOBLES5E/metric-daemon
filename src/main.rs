@@ -39,19 +39,27 @@ fn main() -> Result<()> {
         let output = child.wait_with_output()?;
         assert!(output.status.success());
         let value: f32 = String::from_utf8_lossy(output.stdout.as_ref()).trim().parse()?;
-        let status = match args.properties.as_ref() {
+        let string = match args.properties.as_ref() {
             None => {
-                ureq::post(args.server_url.as_str())
-                    .send_string(format!("{},hostname={} value={}", args.name, hostname::get()?.into_string().expect("cannot get hostname"), value).as_str())?
-                    .status()
+                format!("{},hostname={} value={}", args.name, hostname::get()?.into_string().expect("cannot get hostname"), value)
             }
             Some(properties) => {
-                ureq::post(args.server_url.as_str())
-                    .send_string(format!("{},{},hostname={} value={}", args.name, properties, hostname::get()?.into_string().expect("cannot get hostname"), value).as_str())?
-                    .status()
+                format!("{},{},hostname={} value={}", args.name, properties, hostname::get()?.into_string().expect("cannot get hostname"), value)
             }
         };
-        assert!(200 <= status && status < 300);
+        retry::retry(
+            retry::delay::Exponential::from_millis(1000).take(5),
+            || {
+                let status = ureq::post(args.server_url.as_str())
+                    .send_string(string.as_str())?
+                    .status();
+                if 200 <= status && status < 300 {
+                    Ok(())
+                } else {
+                    anyhow::bail!("failed to send metric")
+                }
+            },
+        ).expect("failed to send metric");
         std::thread::sleep(Duration::from_secs(args.interval_seconds as _));
     }
 }
