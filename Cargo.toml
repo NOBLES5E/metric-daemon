@@ -1,6 +1,6 @@
 [package]
 name = "metric_daemon"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Xiangru Lian <admin@mail.xrlian.com>"]
 edition = "2018"
 description = "metric-daemon, a rusty program"
