@@ -15,7 +15,6 @@ hostname = "0.3"
 
 # other general dependencies
 tracing = "0.1"
-openssl-sys = { version = "*", features = ["vendored"] }
 thiserror = "1.0"
 shadow-rs = "0.5"
 pretty_assertions = "0.7"
