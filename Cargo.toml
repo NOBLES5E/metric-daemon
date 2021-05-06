@@ -4,6 +4,7 @@ version = "0.2.0"
 authors = ["Xiangru Lian <admin@mail.xrlian.com>"]
 edition = "2018"
 description = "metric-daemon, a rusty program"
+license = "AGPL-3.0-or-later"
 
 [dependencies]
 structopt = "0.3"
