@@ -24,7 +24,7 @@ pretty_assertions = "0.7"
 
 [[bin]]
 path = "src/main.rs"
-name = "metric_daemon-cli"
+name = "metric_daemon"
 
 
 [build-dependencies]
